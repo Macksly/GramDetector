@@ -11,15 +11,20 @@ namespace GramDetector {
 	namespace Controllers {
 		class DatabaseController {
 		private:
-			std::vector<std::pair<std::string, int>> _records;
+			sqlite3* _db;
+			sqlite3_stmt* _stmt;
 
-			int openDb(sqlite3* db);
-			void closeDb(sqlite3* db);
 		public:
 			DatabaseController();
 
-			std::vector<std::pair<int, std::string>> getAllValues(GramDetector::Enums::LanguageEnum lang);
+			DatabaseController(const DatabaseController& other) = delete;
+			DatabaseController(DatabaseController&& other) = delete;
+			DatabaseController& operator=(const DatabaseController& other) = delete;
+			DatabaseController& operator=(DatabaseController&& other) = delete;
+
 			std::string getValue(Enums::LanguageEnum lang, int number);
+
+			~DatabaseController();
 		};
 	}
 }
