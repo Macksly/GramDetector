@@ -8,24 +8,23 @@
 namespace GramDetector {
 	namespace Controllers {
 		class AutoGramController {
-		private:
-			std::shared_ptr<GramDetector::Models::RandomEngine> _random;
-			DatabaseController _dbCtrl;
-			std::vector<char> _letters;
-			std::string _input;
-			std::thread _iterationsThread;
-			GramDetector::Enums::LanguageEnum _lang;
-			int _iterations;
-			bool _succes;
-
-			bool findAutogram(std::string& seed);
-			std::string createSentence(const std::string& seed, const std::vector<std::pair<char, std::size_t>>& amounts);
-			std::vector<std::pair<char, std::size_t>> countSentence(const std::string&);
-			void printElapsedIterations();
-
 		public:
-			AutoGramController(std::shared_ptr<GramDetector::Models::RandomEngine> random);
-			bool start(std::string input, GramDetector::Enums::LanguageEnum lang);
+			AutoGramController(const std::shared_ptr<GramDetector::Models::RandomEngine>& random);
+			void start(const std::string& input, const GramDetector::Enums::LanguageEnum& lang);
+
+		private:
+			const std::vector<char> _letters;
+			const std::uniform_int_distribution<int> _dist;
+			const std::shared_ptr<GramDetector::Models::RandomEngine> _random;
+
+			DatabaseController _dbCtrl;
+			std::thread _iterationsThread;
+			int _iterations;
+
+			const bool findAutogram(std::string& seed, const Enums::LanguageEnum& lang, const std::string& input);
+			const std::string createSentence(const std::string& seed, const Enums::LanguageEnum& lang, const std::vector<std::pair<char, std::size_t>>& amounts);
+			const std::vector<std::pair<char, std::size_t>> countSentence(const std::string& value);
+			void printElapsedIterations();
 		};
 	}
 }

@@ -5,9 +5,9 @@ namespace GramDetector {
 	namespace Controllers {
 		class InputController {
 		public:
-			std::string getSentence();
-			int getGramType();
-			int getLangType();
+			const std::string getSentence() const;
+			const int getGramType() const;
+			const int getLangType() const;
 		};
 	}
 }

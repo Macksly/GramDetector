@@ -1,64 +1,55 @@
 #include "AutoGramController.h"
 #include <iostream>
 #include <chrono>
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 using namespace std::this_thread;
 using namespace std::chrono_literals;
 
-GramDetector::Controllers::AutoGramController::AutoGramController(std::shared_ptr<GramDetector::Models::RandomEngine> random) : _random{ random }, _iterations{ 0 }, _succes{false}
-{
-    _letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-}
+GramDetector::Controllers::AutoGramController::AutoGramController(const std::shared_ptr<GramDetector::Models::RandomEngine>& random)
+    : _random{ random }, _iterations{ 0 }, _letters{ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' }, _dist{1,200} {}
 
-bool GramDetector::Controllers::AutoGramController::start(std::string input, GramDetector::Enums::LanguageEnum lang)
+void GramDetector::Controllers::AutoGramController::start(const std::string& input, const GramDetector::Enums::LanguageEnum& lang)
 {
-    _input = input;
     int seedCounter = 1;
-    std::uniform_int_distribution<int> dist{ 1, 200 };
-
     bool succes = false;
-    _lang = lang;
-    
-    _iterationsThread = std::thread(&GramDetector::Controllers::AutoGramController::printElapsedIterations, this);
 
-    while (!_succes) {
-        std::string seed = _input;
-        for (int i{ 0 }; i < 2; ++i) {
-            seed.append(" " + _dbCtrl.getValue(_lang, dist(_random->getInstance())));
+    _iterationsThread = std::thread(&GramDetector::Controllers::AutoGramController::printElapsedIterations, this);
+    
+    std::string seed;
+    while (!succes) {
+        seed = input;
+
+        for (int i{ 0 }; i < 5; ++i) {
+            seed.append(" " + _dbCtrl.getValue(lang, _dist(_random->getInstance())));
         }
 
         std::cout << "New Seed Created (Nr: " << seedCounter << ") " << seed << std::endl;
 
-        if (findAutogram(seed)) {
+        if (findAutogram(seed, lang, input)) {
             _iterationsThread.detach();
-            _succes = true;
+            succes = true;
         }
         else {
             ++seedCounter;
         }
     }
-
-    return true;
 }
 
 void GramDetector::Controllers::AutoGramController::printElapsedIterations() {
-    while (!_succes) {
+    while (true) {
         sleep_for(1000ms);
         std::cout << "Iterations per second: " << std::to_string(_iterations) << std::endl;
         _iterations = 0;
     }
 }
 
-bool GramDetector::Controllers::AutoGramController::findAutogram(std::string& seed)
+const bool GramDetector::Controllers::AutoGramController::findAutogram(std::string& seed, const Enums::LanguageEnum& lang, const std::string& input)
 {
     int iterationCounter = 0;
 
-    while (iterationCounter <= 10) {
+    while (iterationCounter <= 20) {
         std::vector<std::pair<char, std::size_t>> oldAmounts = countSentence(seed);
 
-        std::string result = createSentence(seed, oldAmounts);
+        std::string result = createSentence(input, lang, oldAmounts);
 
         std::vector<std::pair<char, std::size_t>> newAmounts = countSentence(result);
 
@@ -70,23 +61,23 @@ bool GramDetector::Controllers::AutoGramController::findAutogram(std::string& se
             seed = result;
             ++iterationCounter;
         }
-        
     }
 
     return false;
 }
 
-std::string GramDetector::Controllers::AutoGramController::createSentence(const std::string& seed, const std::vector<std::pair<char, std::size_t>>& amounts)
+const std::string GramDetector::Controllers::AutoGramController::createSentence(const std::string& input, const Enums::LanguageEnum& lang, const std::vector<std::pair<char, std::size_t>>& amounts)
 {
-    std::string retVal = _input;
+    std::string retVal = input;
+
     for (std::pair<char, std::size_t> pair : amounts) {
-        retVal.append(" " + _dbCtrl.getValue(_lang, pair.second) + " " + pair.first + "'s,");
+        retVal.append(" " + _dbCtrl.getValue(lang, pair.second) + " " + pair.first + "'s,");
     }
 
     return retVal;
 }
 
-std::vector<std::pair<char, std::size_t>> GramDetector::Controllers::AutoGramController::countSentence(const std::string& seed)
+const std::vector<std::pair<char, std::size_t>> GramDetector::Controllers::AutoGramController::countSentence(const std::string& seed)
 {
     std::vector<std::pair<char, std::size_t>> temp = {};
 
@@ -96,9 +87,9 @@ std::vector<std::pair<char, std::size_t>> GramDetector::Controllers::AutoGramCon
         if (amount > 0) {
             temp.push_back(std::pair<char, std::size_t>(p, amount));
         }
-        else {
-            temp.push_back(std::pair<char, std::size_t>(p, 1));
-        }
+        ////else {
+        ////    temp.push_back(std::pair<char, std::size_t>(p, 1));
+        ////}
     }
 
     ++_iterations;

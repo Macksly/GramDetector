@@ -9,17 +9,17 @@
 namespace GramDetector {
 	namespace Controllers {
 		class MainController {
-		private:
-			std::shared_ptr<Models::RandomEngine> _randomEngine;
-			std::unique_ptr<AutoGramController> _autogramCtrl;
-			InputController _input;
-
-			Enums::TypeEnum getGramType();
-			Enums::LanguageEnum getLanguage();
 		public:
 			MainController();
 
 			void run();
+		private:
+			const std::shared_ptr<Models::RandomEngine> _randomEngine;
+			AutoGramController _autogramCtrl;
+			InputController _input;
+
+			const Enums::TypeEnum getGramType() const;
+			const Enums::LanguageEnum getLanguage() const;
 		};
 	}
 }

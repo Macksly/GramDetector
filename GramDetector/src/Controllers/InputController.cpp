@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-std::string GramDetector::Controllers::InputController::getSentence()
+const std::string GramDetector::Controllers::InputController::getSentence() const
 { 
 	std::cout << "Please enter a sentence:" << std::endl;
 
@@ -13,7 +13,7 @@ std::string GramDetector::Controllers::InputController::getSentence()
 	return retVal;
 }
 
-int GramDetector::Controllers::InputController::getGramType()
+const int GramDetector::Controllers::InputController::getGramType() const
 {
 	std::cout << "Please enter the number of which gramtype you want to test and press <ENTER>" << std::endl;
 	std::cout << "0 - Autogram" << std::endl;
@@ -37,7 +37,7 @@ int GramDetector::Controllers::InputController::getGramType()
 	return retval;
 }
 
-int GramDetector::Controllers::InputController::getLangType()
+const int GramDetector::Controllers::InputController::getLangType() const
 {
 	std::cout << "Please enter the number of which language you want to use and press <ENTER>" << std::endl;
 	std::cout << "0 - Nederlands" << std::endl;

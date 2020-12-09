@@ -145,6 +145,7 @@
     <ClCompile Include="src\Controllers\DatabaseController.cpp" />
     <ClCompile Include="src\Controllers\InputController.cpp" />
     <ClCompile Include="src\Controllers\MainController.cpp" />
+    <ClCompile Include="src\Helpers\BasePathHelper.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Models\RandomEngine.cpp" />
   </ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="src\Controllers\InputController.h" />
     <ClInclude Include="src\Controllers\MainController.h" />
     <ClInclude Include="src\Enums\TypeEnum.h" />
+    <ClInclude Include="src\Helpers\BasePathHelper.h" />
     <ClInclude Include="src\Models\RandomEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
