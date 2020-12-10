@@ -2,35 +2,64 @@
 #include <iostream>
 #include "../Enums/LanguageEnum.h"
 #include <filesystem>
+#include <algorithm>
 #include "../Helpers/BasePathHelper.h"
 
 using namespace GramDetector;
 
-const std::string Controllers::DatabaseController::getValue(const Enums::LanguageEnum& lang, const int& number)
+Controllers::DatabaseController::DatabaseController() : _curValues{} {}
+
+std::string Controllers::DatabaseController::getValue(const Enums::LanguageEnum& lang, int number)
 {
-    std::string _retVal;
+    int pivot = (_curValues.size() - 1) / 2;
+
+    if (_curValues.at(pivot).first == number) {
+        return _curValues.at(pivot).second;
+    }
+    else if (_curValues.at(pivot).first < number) {
+        return findNumber(pivot + 1, _curValues.size() - 1, number);
+    }
+    else {
+        return findNumber(0, pivot - 1, number);
+    }
+}
+
+std::string Controllers::DatabaseController::findNumber(int left, int right, const int number)
+{
+    int pivot = ((left + right) / 2);
+
+    if (_curValues.at(pivot).first == number) {
+        return _curValues.at(pivot).second;
+    }
+    else if (_curValues.at(pivot).first < number) {
+        return findNumber(pivot + 1, right, number);
+    }
+    else {
+        return findNumber(left, pivot - 1, number);
+    }
+}
+
+void Controllers::DatabaseController::loadAllValues(const Enums::LanguageEnum& lang)
+{
     sqlite3* db = {};
     int rc = sqlite3_open(std::string(Helpers::get_base_path() + "/assets/numerals.db").c_str(), &db);
     std::unique_ptr<sqlite3, int(*)(sqlite3*)> dbh{ db, sqlite3_close };
 
     if (rc) {
         std::cout << "Something went wrong during the creation of the database" << std::endl;
-        return _retVal;
+        return;
     }
 
     // create query
-    std::string query = "SELECT num from numerals WHERE language_id == ";
+    std::string query = "SELECT value, num from numerals WHERE language_id == ";
     switch (lang) {
-    case GramDetector::Enums::LanguageEnum::EN:
+    case Enums::LanguageEnum::EN:
         query.append("2");
         break;
     default:
         query.append("1");
         break;
     }
-
-    query.append(" AND value == ");
-    query.append(std::to_string(number));
 
     // create prepared statement
     sqlite3_stmt* stmt;
@@ -39,17 +68,19 @@ const std::string Controllers::DatabaseController::getValue(const Enums::Languag
 
     if (rc != SQLITE_OK) {
         std::cout << "Something went wrong during the creation of the prepared stmt" << std::endl;
-        return _retVal;
+        return;
     }
 
     // execute prepared statement
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        _retVal = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        int num_val = (sqlite3_column_int(stmt, 0));
+        std::string text_val = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        _curValues.push_back(std::make_pair(num_val, text_val));
     }
 
     if (rc != SQLITE_DONE) {
         std::cerr << "SELECT failed: " << sqlite3_errmsg(db) << std::endl;
     }
 
-    return _retVal;
+    std::sort(_curValues.begin(), _curValues.end());
 }

@@ -1,6 +1,8 @@
 #include "BasePathHelper.h"
 
-std::string GramDetector::Helpers::get_base_path()
+using namespace GramDetector;
+
+std::string Helpers::get_base_path()
 {
 	char path[MAX_PATH] = "";
 	GetModuleFileNameA(NULL, path, MAX_PATH);

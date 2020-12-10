@@ -143,7 +143,7 @@
   <ItemGroup>
     <ClCompile Include="src\Controllers\AutoGramController.cpp" />
     <ClCompile Include="src\Controllers\DatabaseController.cpp" />
-    <ClCompile Include="src\Controllers\InputController.cpp" />
+    <ClCompile Include="src\Controllers\IOController.cpp" />
     <ClCompile Include="src\Controllers\MainController.cpp" />
     <ClCompile Include="src\Helpers\BasePathHelper.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -156,7 +156,7 @@
     <ClInclude Include="src\Controllers\AutoGramController.h" />
     <ClInclude Include="src\Enums\LanguageEnum.h" />
     <ClInclude Include="src\Controllers\DatabaseController.h" />
-    <ClInclude Include="src\Controllers\InputController.h" />
+    <ClInclude Include="src\Controllers\IOController.h" />
     <ClInclude Include="src\Controllers\MainController.h" />
     <ClInclude Include="src\Enums\TypeEnum.h" />
     <ClInclude Include="src\Helpers\BasePathHelper.h" />

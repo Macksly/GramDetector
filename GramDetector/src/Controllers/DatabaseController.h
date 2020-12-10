@@ -11,7 +11,13 @@ namespace GramDetector {
 	namespace Controllers {
 		class DatabaseController {
 		public:
-			const std::string getValue(const Enums::LanguageEnum& lang, const int& number);
+			DatabaseController();
+
+			std::string getValue(const Enums::LanguageEnum& lang, int number);
+			void loadAllValues(const Enums::LanguageEnum& lang);
+		private:
+			std::string findNumber(int left, int right, int number);
+			std::vector<std::pair<int, std::string>> _curValues;
 		};
 	}
 }

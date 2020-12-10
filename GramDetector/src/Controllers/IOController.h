@@ -3,11 +3,12 @@
 
 namespace GramDetector {
 	namespace Controllers {
-		class InputController {
+		class IOController {
 		public:
-			const std::string getSentence() const;
+			std::string getSentence() const;
 			const int getGramType() const;
 			const int getLangType() const;
+			void printSucces(const std::string& result, const int seconds, const std::string& input);
 		};
 	}
 }

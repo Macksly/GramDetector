@@ -1,8 +1,10 @@
 #include "RandomEngine.h"
 
-GramDetector::Models::RandomEngine::RandomEngine() : _dre{dev()} {}
+using namespace GramDetector;
 
-std::default_random_engine& GramDetector::Models::RandomEngine::getInstance()
+Models::RandomEngine::RandomEngine() : _dre{dev()} {}
+
+std::default_random_engine& Models::RandomEngine::getInstance()
 {
     return _dre;
 }

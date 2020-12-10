@@ -4,13 +4,26 @@
 #include <filesystem>
 #include "../Enums/LanguageEnum.h"
 
-GramDetector::Controllers::MainController::MainController() : _autogramCtrl{ _randomEngine }, _randomEngine{ std::make_shared<Models::RandomEngine>() } {}
+using namespace GramDetector;
 
-const GramDetector::Enums::TypeEnum GramDetector::Controllers::MainController::getGramType() const
+Controllers::MainController::MainController() : _autogramCtrl{ _randomEngine, _ioCtrl }, _randomEngine{ std::make_shared<Models::RandomEngine>() } {}
+
+void Controllers::MainController::run()
+{
+    Enums::TypeEnum type = getGramType();
+    Enums::LanguageEnum lang = getLanguage();
+
+    if (type == Enums::TypeEnum::AUTOGRAM)
+        _autogramCtrl.start(_ioCtrl->getSentence(), lang, false);
+    else if (type == Enums::TypeEnum::PANGRAM)
+        _autogramCtrl.start(_ioCtrl->getSentence(), lang, true);
+}
+
+const Enums::TypeEnum Controllers::MainController::getGramType() const
 {
     GramDetector::Enums::TypeEnum retVal;
 
-    switch (_input.getGramType()) {
+    switch (_ioCtrl->getGramType()) {
     case 1:
         retVal = GramDetector::Enums::TypeEnum::PANGRAM;
         break;
@@ -22,11 +35,11 @@ const GramDetector::Enums::TypeEnum GramDetector::Controllers::MainController::g
     return retVal;
 }
 
-const GramDetector::Enums::LanguageEnum GramDetector::Controllers::MainController::getLanguage() const
+const Enums::LanguageEnum Controllers::MainController::getLanguage() const
 {
     GramDetector::Enums::LanguageEnum retVal;
 
-    switch (_input.getLangType()) {
+    switch (_ioCtrl->getLangType()) {
     case 1:
         retVal = GramDetector::Enums::LanguageEnum::EN;
         break;
@@ -36,16 +49,4 @@ const GramDetector::Enums::LanguageEnum GramDetector::Controllers::MainControlle
     }
 
     return retVal;
-}
-
-void GramDetector::Controllers::MainController::run()
-{
-    GramDetector::Enums::TypeEnum type = getGramType();
-    GramDetector::Enums::LanguageEnum lang = getLanguage();
-    std::string sentence = _input.getSentence();
-
-    if (type == Enums::TypeEnum::AUTOGRAM)
-        _autogramCtrl.start(sentence, lang);
-    else if (type == Enums::TypeEnum::PANGRAM)
-        _autogramCtrl.start(sentence, lang);
 }
