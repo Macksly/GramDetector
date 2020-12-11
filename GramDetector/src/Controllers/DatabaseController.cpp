@@ -11,6 +11,11 @@ Controllers::DatabaseController::DatabaseController() : _curValues{} {}
 
 std::string Controllers::DatabaseController::getValue(const Enums::LanguageEnum& lang, int number)
 {
+    if (number > _curValues.at(_curValues.size() - 1).first ||
+        number < _curValues.at(0).first) {
+        throw std::exception("Number does not exist in database");
+    }
+
     int pivot = (_curValues.size() - 1) / 2;
 
     if (_curValues.at(pivot).first == number) {
@@ -46,8 +51,7 @@ void Controllers::DatabaseController::loadAllValues(const Enums::LanguageEnum& l
     std::unique_ptr<sqlite3, int(*)(sqlite3*)> dbh{ db, sqlite3_close };
 
     if (rc) {
-        std::cout << "Something went wrong during the creation of the database" << std::endl;
-        return;
+        throw std::exception("Cannot open database");
     }
 
     // create query
@@ -67,8 +71,7 @@ void Controllers::DatabaseController::loadAllValues(const Enums::LanguageEnum& l
     std::unique_ptr<sqlite3_stmt, int(*)(sqlite3_stmt*)> stmth{ stmt, sqlite3_finalize };
 
     if (rc != SQLITE_OK) {
-        std::cout << "Something went wrong during the creation of the prepared stmt" << std::endl;
-        return;
+        throw std::exception("Cannot create prepared stmt");
     }
 
     // execute prepared statement
@@ -79,7 +82,7 @@ void Controllers::DatabaseController::loadAllValues(const Enums::LanguageEnum& l
     }
 
     if (rc != SQLITE_DONE) {
-        std::cerr << "SELECT failed: " << sqlite3_errmsg(db) << std::endl;
+        throw std::exception("Something went wrong during the executing of the stmt");
     }
 
     std::sort(_curValues.begin(), _curValues.end());

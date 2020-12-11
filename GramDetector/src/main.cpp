@@ -25,4 +25,7 @@ int main()
     catch (std::exception e) {
         std::cout << e.what() << std::endl;
     }
+    catch (...) {
+        std::cout << "Unkown exception occured" << std::endl;
+    }
 }

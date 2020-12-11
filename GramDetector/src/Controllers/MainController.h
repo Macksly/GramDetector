@@ -1,12 +1,15 @@
 #pragma once
 #include "../Models/RandomEngine.h"
-#include "IOController.h"
-#include "DatabaseController.h"
-#include "../Enums/TypeEnum.h"
-#include <memory>
 #include "AutoGramController.h"
+#include <memory>
+
+
 
 namespace GramDetector {
+	namespace Enums {
+		enum class TypeEnum;
+	}
+
 	namespace Controllers {
 		class MainController {
 		public:

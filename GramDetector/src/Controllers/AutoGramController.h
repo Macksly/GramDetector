@@ -1,13 +1,14 @@
 #pragma once
+#include "DatabaseController.h"
+#include "../Models/RandomEngine.h"
 #include <string>
 #include <memory>
-#include "../Models/RandomEngine.h"
-#include "DatabaseController.h"
-#include "IOController.h"
 #include <thread>
 
 namespace GramDetector {
 	namespace Controllers {
+		class IOController;
+
 		class AutoGramController {
 		public:
 			AutoGramController(const std::shared_ptr<Models::RandomEngine>& random, const std::shared_ptr<Controllers::IOController>& input);

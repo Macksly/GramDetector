@@ -3,6 +3,8 @@
 #include <iostream>
 #include <filesystem>
 #include "../Enums/LanguageEnum.h"
+#include "../Enums/TypeEnum.h"
+#include "IOController.h"
 
 using namespace GramDetector;
 
